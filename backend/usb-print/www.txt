@@ -1,0 +1,60 @@
+npm install express dotenv serialport body-parser
+
+import express from "express";
+import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import { SerialPort } from "serialport";
+
+dotenv.config();
+
+const app = express();
+app.use(bodyParser.json());
+
+const COM_PORT = process.env.COM_PORT || "COM3";
+const BAUD_RATE = parseInt(process.env.BAUD_RATE || "9600");
+
+app.post("/api/print-zpl", async (req, res) => {
+  const { zpl } = req.body;
+
+  if (!zpl || typeof zpl !== "string") {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing or invalid ZPL data." });
+  }
+
+  const port = new SerialPort({
+    path: COM_PORT,
+    baudRate: BAUD_RATE,
+    autoOpen: false,
+  });
+
+  port.open((err) => {
+    if (err) {
+      console.error("Failed to open port:", err.message);
+      return res
+        .status(500)
+        .json({ success: false, message: "Serial port open error" });
+    }
+
+    console.log(`Serial port ${COM_PORT} opened. Sending ZPL...`);
+
+    port.write(zpl, (writeErr) => {
+      if (writeErr) {
+        console.error("Error writing to printer:", writeErr.message);
+        port.close();
+        return res
+          .status(500)
+          .json({ success: false, message: "Write failed" });
+      }
+
+      console.log("ZPL sent successfully.");
+      port.close();
+      return res.json({ success: true, message: "ZPL sent to printer" });
+    });
+  });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`USB Print API server running at http://localhost:${PORT}`);
+});

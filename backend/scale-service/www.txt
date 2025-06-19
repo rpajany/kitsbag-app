@@ -1,0 +1,54 @@
+npm init
+
+npm install serialport @serialport/parser-readline
+npm i express
+npm i cors@2.8.5
+
+-----------------------------------
+import express from "express";
+import { SerialPort } from 'serialport';
+import { ReadlineParser } from '@serialport/parser-readline';
+
+const app = express();
+const PORT = 8080;
+
+let lastWeight = '';
+
+// list COM ports
+SerialPort.list().then((ports) => {
+  console.log("Available ports:");
+  ports.forEach((port) => {
+    console.log(`- ${port.path}`);
+  });
+});
+
+// Initialize serial port (update 'COM3' to your actual port)
+const scalePort = new SerialPort({
+  path: "COM3",
+  baudRate: 9600,
+  autoOpen: false,
+});
+
+scalePort.open((err) => {
+  if (err) {
+    return console.error("Failed to open COM3:", err.message);
+  }
+  console.log("COM3 opened successfully");
+});
+
+// Readline parser
+const parser = scalePort.pipe(new ReadlineParser({ delimiter: "\r\n" }));
+
+parser.on("data", (data) => {
+  console.log("Raw scale data:", data);
+  lastWeight = data.trim();
+});
+
+// API to get the latest weight
+app.get("/api/weight", (req, res) => {
+  res.json({ weight: lastWeight });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});

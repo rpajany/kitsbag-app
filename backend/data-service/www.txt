@@ -1,0 +1,150 @@
+npm install express mongoose dotenv cors bcrypt jsonwebtoken
+npm i cookie-parser
+npm i nodemon -D
+
+npm i winston
+
+import logger from './logger.js';
+
+logger.info('Server started...');
+logger.warn('Something looks fishy...');
+logger.error('Something went wrong');
+
+🛠️ Tips
+Use logger.debug(...) for detailed dev logs.
+
+Use logger.error(err.stack) to log full error traces.
+
+You can set log level dynamically using an env variable:
+
+----------------------------------------------------------------
+ To run multiple Node.js apps on the same machine (e.g., development server or production server), you need to make sure each app:
+
+Listens on a different port
+
+Optionally runs in the background (e.g., using pm2 or forever for production)
+
+Is isolated properly (different folders, different .env if needed)
+
+Example 1: Run Two Apps Manually with Different Ports
+App 1 (e.g., app1/index.js):
+
+import express from "express";
+const app = express();
+const PORT = 3000;
+app.get("/", (req, res) => res.send("App 1 is running"));
+app.listen(PORT, () => console.log(`App 1 running on port ${PORT}`));
+
+App 2 (e.g., app2/index.js):
+
+import express from "express";
+const app = express();
+const PORT = 4000;
+app.get("/", (req, res) => res.send("App 2 is running"));
+app.listen(PORT, () => console.log(`App 2 running on port ${PORT}`));
+
+Run each app in its own terminal:
+
+# Terminal 1
+cd app1
+node index.js
+
+# Terminal 2
+cd app2
+node index.js
+
+Example 2: Run Both with pm2 (Recommended for Production or Multiple Apps)
+Step 1: Install pm2
+npm install -g pm2
+
+Step 2: Start Both Apps:-
+pm2 start app1/index.js --name app1
+pm2 start app2/index.js --name app2
+
+pm2 kill
+
+Step 3: Save and Auto-start on reboot
+
+pm2 save
+pm2 startup
+
+View apps:
+
+pm2 list
+
+Example 3: Use concurrently (Development Only)
+Install concurrently if you want to run both apps from one terminal:
+
+npm install --save-dev concurrently
+
+In a parent package.json:
+
+"scripts": {
+  "start": "concurrently \"node app1/index.js\" \"node app2/index.js\""
+}
+
+Run:
+
+npm start
+-------------------------------------------
+Workaround for Windows:-
+If you're trying to make PM2 start your Node.js processes automatically after system reboot on Windows, you can do it manually using Task Scheduler.
+
+Here’s how to set it up:
+
+Step 1: Find PM2 location
+PM2 is usually installed globally. Find its path (it’s typically in %APPDATA%\npm):
+
+Example:
+
+
+C:\Users\pajany\AppData\Roaming\npm\pm2.cmd
+Step 2: Create a Scheduled Task
+Open Task Scheduler.
+
+Click Create Task (not basic task).
+
+On the General tab:
+
+Name: PM2 Startup
+
+Check "Run with highest privileges"
+
+On the Triggers tab:
+
+Click New → Begin the task: At log on
+
+On the Actions tab:
+
+Click New
+
+Action: Start a program
+
+Program/script: pm2.cmd
+
+Add arguments: resurrect
+
+Start in: (optional) C:\Users\pajany
+
+Click OK and test by restarting or logging off and logging back in.
+
+Step 3: Save Current Processes
+You've already done this:
+
+
+pm2 save
+This stores the list of running apps in a dump file (dump.pm2), which is used by pm2 resurrect to bring them back.
+
+Optional: Test it manually
+You can test the startup resurrection manually before relying on Task Scheduler:
+
+
+pm2 resurrect
+If your services start correctly, your task is correctly configured.
+
+Let me know if you want to auto-launch PM2 in the background at Windows service level, which requires more advanced setup using nssm or converting the app to a service.
+--------------------------------------------------------------------------------
+pm2 start data-service/index.js --name data-service
+
+pm2 start index.js --name data-service
+pm2 start index.js --name scale-service

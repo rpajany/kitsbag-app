@@ -1,0 +1,19 @@
+npm create vite@latest
+
+npm run dev
+
+npm i axios
+npm i cross-env
+ npm i react-toastify@10.0.4
+ npm i react-router-dom@6.28.1
+
+ npx shadcn@latest init
+ npx shadcn@latest add button
+ npx shadcn@latest add card
+npx shadcn@latest add avatar
+npx shadcn@latest add input
+npx shadcn@latest add label
+npx shadcn@latest add dropdown-menu
+npx shadcn@latest add theme
+npx shadcn@latest add sidebar
+npx shadcn@latest add collapsible
