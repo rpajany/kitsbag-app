@@ -21,11 +21,11 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  return(
-    <AuthContext.Provider value={{user, setUser, checkAuth}}>
-        {children}
+  return (
+    <AuthContext.Provider value={{ user, setUser, checkAuth }}>
+      {children}
     </AuthContext.Provider>
-  )
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);

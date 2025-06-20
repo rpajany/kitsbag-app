@@ -25,10 +25,13 @@ app.use(express.json());
 app.use(cookieParser()); // is a middleware for Express that parses cookies attached to the client request object. It populates a new object: 'req.cookies' , It reads the cookies from the Cookie header in the incoming HTTP request.It parses them and makes them easily accessible as req.cookies.
 
 // routers
-import authRoutes from "./routes/auth_route.js";
+import auth_Routes from "./routes/auth_route.js";
+import kitMaster_Routes from "./routes/kitMaster_Route.js";
 
 // API Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", auth_Routes);
+app.use("/api/kit_master", kitMaster_Routes);
+
 app.get("/api/protected", verifyToken, (req, res) => {
   res.status(200).json({
     message: `Access granted Protected content !`,

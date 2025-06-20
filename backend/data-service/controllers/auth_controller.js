@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import User from "../models/auth_model.js";
+import User from "../models/user_model.js";
 import jwt from "jsonwebtoken";
 import { logger } from "../utils/logger.js";
 
@@ -107,6 +107,19 @@ export const login = async (req, res, next) => {
         success: true,
         error: false,
       });
+  } catch (error) {
+    next(error); // pass to centralized error handler
+  }
+};
+
+// logout
+export const logout = async (req, res, next) => {
+  try {
+    res.clearCookie("token", { path: "/" }).status(200).json({
+      message: "Logout successful",
+      success: true,
+      error: false,
+    });
   } catch (error) {
     next(error); // pass to centralized error handler
   }

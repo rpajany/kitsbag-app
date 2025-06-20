@@ -27,12 +27,14 @@ export const Login = () => {
   const [password, setPassword] = useState("123");
   const [loading, setLoading] = useState(false);
 
+  // console.log("user :", user);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const result = await POST_Api("/user/login", { username, password });
+      const result = await POST_Api("/auth/login", { username, password });
       console.log("login result :", result);
 
       const res = await GET_Api("/protected");
@@ -82,7 +84,7 @@ export const Login = () => {
                     name="username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    autocomplete="off"
+                    autoComplete="off"
                     className="input-style"
                   />
                 </div>
@@ -95,7 +97,7 @@ export const Login = () => {
                     name="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    autocomplete="off"
+                    autoComplete="off"
                     className="input-style"
                   />
                 </div>

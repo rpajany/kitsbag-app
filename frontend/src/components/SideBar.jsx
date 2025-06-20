@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -44,6 +45,7 @@ import {
   User2,
   ProjectorIcon,
   DeleteIcon,
+  TableOfContents,
   LayoutDashboard,
 } from "lucide-react";
 // Menu items.
@@ -54,8 +56,8 @@ const items = [
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: "Master",
+    url: "master",
     icon: Inbox,
   },
   {
@@ -80,7 +82,7 @@ export const SideBar = () => {
     <Sidebar collapsible="icon" className="relative top-0 left-0 ">
       <SidebarHeader>
         <LayoutDashboard />
-        Dashboard
+        {/* Dashboard */}
       </SidebarHeader>
       <SidebarSeparator />
       <SidebarContent>
@@ -91,10 +93,10 @@ export const SideBar = () => {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                   {item.title == "Inbox" && (
                     <SidebarMenuBadge>10</SidebarMenuBadge>
@@ -110,6 +112,7 @@ export const SideBar = () => {
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger>
+                <TableOfContents />
                 Help
                 <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
               </CollapsibleTrigger>

@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { POST_Api } from "@/services/ApiService";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -14,6 +17,24 @@ import { Button } from "@/components/ui/button";
 
 export const Header = () => {
   const { setTheme, theme } = useTheme();
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+
+  // console.log("user :", user);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
+
+  const logout = async () => {
+    // console.log("logout called !!");
+    await POST_Api("/auth/logout");
+    setUser(null);
+    navigate("/login");
+  };
+
   return (
     <div className="flex justify-between p-2 border-2 z-50 bg-blue-300">
       <div className="flex items-center gap-2">
@@ -27,7 +48,7 @@ export const Header = () => {
       <div>
         <DropdownMenu className="">
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon"  >
+            <Button variant="ghost" size="icon">
               <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
@@ -64,8 +85,10 @@ export const Header = () => {
             {/* <DropdownMenuItem>Billing</DropdownMenuItem>
             <DropdownMenuItem>Team</DropdownMenuItem> */}
             <DropdownMenuItem variant="destructive">
-              <LogOut className="h-[1.2rem] w-[1.2rem] mr-2" />
-              Logout
+              <button onClick={logout} className="flex items-center">
+                <LogOut className="h-[1.2rem] w-[1.2rem] mr-2" />
+                Logout
+              </button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

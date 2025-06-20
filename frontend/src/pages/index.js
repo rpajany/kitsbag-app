@@ -1,3 +1,3 @@
 export { Login } from "./Login";
 export { Home } from "./Home";
-// export {Login} from './Login';
+export { Master } from "./Master";
