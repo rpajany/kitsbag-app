@@ -7,6 +7,31 @@ npm i cross-env
  npm i react-toastify@10.0.4
  npm i react-router-dom@6.28.1
 
+https://lucide.dev/icons/
+
+ npm i react-data-table-component@7.6.2
+ npm i xlsx@0.18.5
+   npm i file-saver@2.0.5 
+    npm i react-icons@5.3.0 
+        npm i moment@2.30.1 
+             npm i to-words@3.3.0
+             npm install sweetalert2
+
+                 npm i react-datepicker@7.4.0 --legacy-peer-deps
+npm install styled-components --legacy-peer-deps
+
+
+
+npm i react-date-range
+
+To string:
+format(dateRange[0].startDate, "dd-MM-yyyy");
+  From: {format(dateRange[0].startDate, "dd-MM-yyyy")} <br />
+  To: {format(dateRange[0].endDate, "dd-MM-yyyy")}
+  
+To ISO for APIs:
+dateRange[0].startDate.toISOString(); // "2025-06-27T00:00:00.000Z"
+
  npx shadcn@latest init
  npx shadcn@latest add button
  npx shadcn@latest add card
@@ -17,3 +42,87 @@ npx shadcn@latest add dropdown-menu
 npx shadcn@latest add theme
 npx shadcn@latest add sidebar
 npx shadcn@latest add collapsible
+npx shadcn@latest add calendar
+npx shadcn@latest add popover
+npx shadcn@latest add command
+npx shadcn@latest add table
+npm install @tanstack/react-table
+npx shadcn@latest add checkbox
+
+This stop / restarts the MongoDB service: 
+net stop MongoDB
+net start MongoDB
+
+https://chatgpt.com/share/685e492a-f858-8007-9ac1-cde5596e8830
+
+Yes — to enable MongoDB transactions on your deployment PC, you need to follow the same procedure to configure it as a replica set.
+
+Here’s a clear checklist for deploying the same setup on any Windows machine:
+
+✅ Step-by-Step Procedure for Deployment PC (Windows)
+🔁 1. Edit mongod.cfg to enable replica set
+Open:
+
+ 
+C:\Program Files\MongoDB\Server\8.0\bin\mongod.cfg
+Add this at the bottom (or un-comment it):
+ 
+replication:
+  replSetName: "rs0"
+✅ Save the file.
+
+🔄 2. Restart MongoDB Service
+Open Command Prompt as Administrator and run:
+
+ 
+net stop MongoDB
+net start MongoDB
+✅ This reloads MongoDB with the replica set enabled.
+
+💻 3. Run mongosh
+Use the full path if it's not in PATH:
+
+bash
+Copy
+Edit
+"C:\Users\<username>\AppData\Local\Programs\mongosh\mongosh.exe"
+Or add mongosh path to system environment variables for convenience.
+
+⚙️ 4. Initialize the Replica Set
+Once inside the shell:
+
+js
+Copy
+Edit
+rs.initiate()
+✅ This command starts the replica set.
+
+🧪 5. Verify It
+Run:
+
+js
+Copy
+Edit
+rs.status()
+Check that it shows "stateStr": "PRIMARY"
+
+💡 6. Use Correct MongoDB URI in App/Compass
+Always connect using:
+
+ruby
+Copy
+Edit
+mongodb://localhost:27017/?replicaSet=rs0
+This is important for both:
+
+Mongoose (Node.js)
+
+MongoDB Compass (GUI)
+
+📝 Summary of What to Repeat on Deploy PC
+Step	Description
+Add replSetName to mongod.cfg	Required for replica set
+Restart MongoDB Service	Applies the config change
+Run rs.initiate()	Initializes replica set
+Use replicaSet URI	Required for transactions to work
+

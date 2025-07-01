@@ -38,7 +38,7 @@ export const POST_Api = async (API_URL, data) => {
 export const GET_Api = async (API_URL, config = {}) => {
   try {
     const response = await axios.get(API_URL, config);
-    // console.log('GET ApiResponse :', Get_ApiResponse.data)
+    // console.log('GET ApiResponse :', response.data)
     return response;
   } catch (error) {
     console.error(`GET_Api error for ${API_URL}:`, error.message);

@@ -98,8 +98,8 @@ export const login = async (req, res, next) => {
     res
       .cookie("token", token, {
         httpOnly: true, // → not visible in browser's JS (only visible in DevTools > Application > Cookies)
-        secure: false, // → will NOT send cookie on HTTPS (which is good for localhost, but in production, set to true)
-        sameSite: "lax", // → good default, but be cautious if you're doing cross-site auth (then use 'none' + secure: true)
+        secure: process.env.NODE_ENV == "development" ? false : true, // false → will NOT send cookie on HTTPS (which is good for localhost, but in production, set to true)
+        sameSite: process.env.NODE_ENV == "development" ? "lax" : "none", // "lax" → good default, but be cautious if you're doing cross-site auth (then use 'none' + secure: true)
         maxAge: 3600000, // 1 hour
       })
       .json({

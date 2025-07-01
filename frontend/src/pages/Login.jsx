@@ -53,8 +53,8 @@ export const Login = () => {
       {/* <!-- component --> */}
       <div className="h-screen flex items-center justify-center bg-sky-100 px-20">
         {/* <!-- Left: Image --> */}
-        <div className=" w-1/2 h-full hidden md:block  align-text-bottom ">
-          <img src={brand_logo} height={"200px"} width={"200px"} />
+        <div className="w-1/2 h-1/2 hidden md:flex flex-col justify-end items-start p-4 ">
+          <img src={brand_logo} alt="Logo" height="50%" width="50%" className="rounded-md"/>
         </div>
 
         {/* <!-- Right: Login Form --> */}

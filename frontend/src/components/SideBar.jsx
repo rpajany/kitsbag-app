@@ -47,6 +47,9 @@ import {
   DeleteIcon,
   TableOfContents,
   LayoutDashboard,
+  Barcode,
+  BaggageClaim,
+  Weight
 } from "lucide-react";
 // Menu items.
 const items = [
@@ -61,19 +64,19 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
+    title: "Order",
+    url: "order",
+    icon: BaggageClaim,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
+    title: "Part Label",
+    url: "partlabel",
+    icon: Barcode,
   },
   {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    title: "WeightLabel",
+    url: "weightlabel",
+    icon: Weight,
   },
 ];
 

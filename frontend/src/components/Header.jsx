@@ -14,6 +14,8 @@ import {
 import { LogOut, MoonIcon, User, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/context/theme-provider";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png";
+import user_logo from "@/assets/default-user.png";
 
 export const Header = () => {
   const { setTheme, theme } = useTheme();
@@ -36,13 +38,14 @@ export const Header = () => {
   };
 
   return (
-    <div className="flex justify-between p-2 border-2 z-50 bg-blue-300">
+    <div className="w-full flex justify-between p-2 px-4  border-2 z-50 bg-blue-300">
       <div className="flex items-center gap-2">
-        <Avatar>
+        {/* <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>Logo</AvatarFallback>
-        </Avatar>
-        <h5>Vishwakarma Tech</h5>
+        </Avatar> */}
+        <img src={logo} className="w-40"/>
+        {/* <h5>Rithul Industries</h5> */}
       </div>
 
       <div>
@@ -70,16 +73,18 @@ export const Header = () => {
       <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Avatar>
+            {/* <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            </Avatar> */}
+            <img src={user_logo} className="w-10 h-10 rounded-full"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <User className="h-[1.2rem] w-[1.2rem] mr-2" />
+              
               Profile
             </DropdownMenuItem>
             {/* <DropdownMenuItem>Billing</DropdownMenuItem>

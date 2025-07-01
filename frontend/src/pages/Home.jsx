@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { DateRange } from "react-date-range";
+import { useDateRange } from "../context/DateRangeContext";
 import { safeCall, POST_Api, GET_Api } from "../services/ApiService";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
+import "react-date-range/dist/styles.css"; // main style
+import "react-date-range/dist/theme/default.css"; // theme style
 
 export const Home = () => {
+  const { dateRange, setDateRange } = useDateRange();
   const [printer, setPrinter] = useState(null);
   const [weight, setWeight] = useState(0);
 
@@ -75,6 +80,10 @@ export const Home = () => {
     }
   };
 
+  const handleSelect = (ranges) => {
+    setDateRange([ranges.selection]);
+  };
+
   return (
     <>
       <p>Home</p>
@@ -100,7 +109,17 @@ export const Home = () => {
             Print Label
           </button>
 
-          <Button  >Click me</Button>
+          <Button>Click me</Button>
+        </div>
+
+        <div>
+          <DateRange
+            editableDateInputs={true}
+            onChange={handleSelect}
+            moveRangeOnFirstSelection={false}
+            ranges={dateRange}
+            numberOfMonths={2}
+          />
         </div>
       </div>
     </>

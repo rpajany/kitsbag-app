@@ -1,7 +1,7 @@
 npm install express mongoose dotenv cors bcrypt jsonwebtoken
 npm i cookie-parser
 npm i nodemon -D
-
+npm i date-fns
 npm i winston
 
 import logger from './logger.js';
@@ -148,3 +148,73 @@ pm2 start data-service/index.js --name data-service
 
 pm2 start index.js --name data-service
 pm2 start index.js --name scale-service
+
+------------------------------------------------------------
+🔁 Full Code:
+js
+Copy
+Edit
+const unique_mainKit = await MainKit.aggregate([
+  { $sort: { _id: -1 } },
+  {
+    $group: {
+      _id: "$bag_number",
+      doc: { $first: "$$ROOT" }
+    }
+  },
+  { $replaceRoot: { newRoot: "$doc" } }
+]);
+📘 What this aggregation does:
+1️⃣ { $sort: { _id: -1 } }
+Sorts all MainKit documents in descending order of _id.
+
+This ensures that latest document per bag_number comes first when we group them.
+
+_id is typically a MongoDB ObjectId that embeds timestamp → so this gives the most recent first.
+
+2️⃣ $group: { _id: "$bag_number", doc: { $first: "$$ROOT" } }
+Groups documents by unique bag_number value.
+
+For each bag_number, it picks only the first document in that group (because we sorted earlier).
+
+$$ROOT represents the entire document, and $first: "$$ROOT" selects the full document.
+
+So for:
+
+js
+Copy
+Edit
+[
+  { bag_number: "BAG001", item: "A" },
+  { bag_number: "BAG001", item: "B" }
+]
+→ it will pick just one of them (latest), say { bag_number: "BAG001", item: "B" }.
+
+3️⃣ { $replaceRoot: { newRoot: "$doc" } }
+Right now, after grouping, each object looks like:
+
+js
+Copy
+Edit
+{
+  _id: "BAG001",
+  doc: {
+    bag_number: "BAG001",
+    item: "B",
+    ...
+  }
+}
+$replaceRoot replaces the entire document with just the doc field, giving you back the original format of a full MainKit document.
+
+So final output is:
+
+js
+Copy
+Edit
+[
+  { bag_number: "BAG001", item: "B", ... },
+  { bag_number: "BAG002", item: "C", ... },
+  ...
+]
+With only one document per unique bag_number.
+

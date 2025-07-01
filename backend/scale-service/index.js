@@ -139,6 +139,7 @@ function scheduleReconnect() {
 // API endpoint
 app.get("/api/weight", (req, res) => {
   res.json({
+    port: process.env.SERIAL_PORT,
     weight: lastStableWeight,
     unit: "kg", // or 'g' if your scale uses grams
   });

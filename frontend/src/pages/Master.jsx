@@ -1,15 +1,15 @@
 import React from "react";
-import { MainKit, PartKit } from "@/components";
+import { MainKit, ChildKit } from "@/components";
 
 export const Master = () => {
   return (
     <>
-      <div className="flex gap-8">
-        <div className="w-1/2 ">
+      <div className="w-full flex gap-8">
+        <div className="w-150">
           <MainKit />
         </div>
-        <div className="w-1/2">
-          <PartKit />
+        <div className="w-150">
+          <ChildKit />
         </div>
       </div>
     </>
