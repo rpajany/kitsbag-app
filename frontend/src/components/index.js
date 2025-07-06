@@ -12,3 +12,5 @@ export { DataTableCheckbox } from "./DataTableCheckbox";
 export { DataTableFull } from "./DataTableFull";
 export { Combobox } from "./Combobox";
 export { ComboboxDynamic } from "./ComboboxDynamic";
+export { MultiAutoComplete } from "./MultiAutoComplete";
+export { RadioGroupModel } from "./RadioGroupModel";

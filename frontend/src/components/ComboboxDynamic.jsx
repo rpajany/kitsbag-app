@@ -35,13 +35,13 @@ export const ComboboxDynamic = ({
 
   return (
     <>
-      <Popover open={open} onOpenChange={handleOpenChange}>
+      <Popover open={open} onOpenChange={handleOpenChange} >
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[200px] justify-between"
+            className="w-full justify-between" // w-[200px]
           >
             {comboValue
               ? comboData.find((item) => item.value === comboValue)?.label

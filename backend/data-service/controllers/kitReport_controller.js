@@ -94,9 +94,19 @@ export const Load_CompleteKit_ByOrderBag = async (req, res, next) => {
       });
     }
 
-    // if data found..
+    // if data found format date...
+    const formattedData = KitReport_data.map((row) => {
+      const rowObj = row.toObject();
+      return {
+        ...rowObj,
+        pack_date: row.pack_date
+          ? format(new Date(row.pack_date), "dd-MM-yyyy")
+          : null,
+      };
+    });
+
     return res.status(200).json({
-      data: KitReport_data,
+      data: formattedData,
       message: "Load_CompleteKit_ByOrderBag Successfully",
       success: true,
       error: false,
@@ -105,6 +115,77 @@ export const Load_CompleteKit_ByOrderBag = async (req, res, next) => {
     console.error("Error Load_CompleteKit_ByOrderBag :", error);
 
     logger.error("Error Load_CompleteKit_ByOrderBag :", {
+      message: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString(),
+    });
+
+    next(error); // pass to centralized error handler
+  }
+};
+
+export const Load_CompleteKit_ByDate = async (req, res, next) => {
+  try {
+    const { fromDate, toDate } = req.body;
+
+    console.log("fromDate, toDate (raw):", fromDate, toDate);
+
+    // Validate input
+    if (!fromDate || !toDate) {
+      return res.status(400).json({
+        message: "Missing date range",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Convert JSON strings from frontend  to JavaScript Date objects
+    const fromDt = new Date(fromDate);
+    const toDt = new Date(toDate);
+    console.log("fromDt:", fromDt, "type:", typeof fromDt);
+    console.log("toDt:", toDt, "type:", typeof toDt);
+
+    // const KitReport_data = await KitReport.find().sort({ _id: -1 }); // Descending;
+    // Filter records based on createdAt field
+    const KitReport_data = await KitReport.find({
+      // status: "Complete",
+      pack_date: {
+        $gte: fromDt,
+        $lte: toDt,
+      },
+    });
+
+    console.log("Matched records:", KitReport_data.length);
+
+    logger.info("Load_CompleteKit_ByDate : Successfully fetched data", {
+      count: KitReport_data.length,
+      timestamp: new Date().toISOString(),
+    });
+
+    const formattedData = KitReport_data.map((row) => {
+      const rowObj = row.toObject();
+      const packDate = rowObj.pack_date;
+
+      return {
+        ...rowObj,
+        pack_date:
+          packDate && isValid(new Date(packDate))
+            ? format(new Date(packDate), "dd-MM-yyyy")
+            : "",
+        // delivery_date: same check if needed
+      };
+    });
+
+    return res.status(200).json({
+      data: formattedData,
+      message: "Load_CompleteKit_ByDate data Successfully",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    console.error("Error Load_CompleteKit_ByDate :", error);
+
+    logger.error("Error Load_CompleteKit_ByDate :", {
       message: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString(),
@@ -191,6 +272,7 @@ export const Insert_KitReport = async (req, res, next) => {
     const kitReports = Array.from({ length: qty }, (_, i) => ({
       ...kitReport_data,
       serial_number: startSerial + i,
+       pack_date: kitReport_data.pack_date ? new Date(kitReport_data.pack_date) : null,
     }));
 
     // 3. Insert all reports inside transaction

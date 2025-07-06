@@ -59,6 +59,7 @@ export const Get_ByBagNumber = async (req, res, next) => {
     next(error); // pass to centralized error handler
   }
 };
+
 // insert Master
 export const Insert_ChildKit = async (req, res, next) => {
   try {
@@ -67,11 +68,11 @@ export const Insert_ChildKit = async (req, res, next) => {
       part_number: req.body.part_number,
       description: req.body.description,
       qty: req.body.qty,
-      min_weight: req.body.min_weight,
-      max_weight: req.body.max_weight,
+      // min_weight: req.body.min_weight,
+      // max_weight: req.body.max_weight,
       part_level: req.body.part_level,
-      parent_item_code: req.body.parent_item_code,
-      sub_assy: req.body.sub_assy,
+      // parent_item_code: req.body.parent_item_code,
+      // sub_assy: req.body.sub_assy,
     };
 
     // Check if childKit already exists
@@ -113,11 +114,11 @@ export const Update_ChildKit = async (req, res, next) => {
       part_number: req.body.part_number,
       description: req.body.description,
       qty: req.body.qty,
-      min_weight: req.body.min_weight,
-      max_weight: req.body.max_weight,
+      // min_weight: req.body.min_weight,
+      // max_weight: req.body.max_weight,
       part_level: req.body.part_level,
-      parent_item_code: req.body.parent_item_code,
-      sub_assy: req.body.sub_assy,
+      // parent_item_code: req.body.parent_item_code,
+      // sub_assy: req.body.sub_assy,
     };
 
     const updatedData = await childKit.findByIdAndUpdate(id, update_Data, {

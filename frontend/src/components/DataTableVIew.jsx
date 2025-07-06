@@ -91,12 +91,24 @@ export const DataTableVIew = ({ tbl_title, columns, apiData }) => {
       style: {
         backgroundColor: "#4b4444de", // Set header background color to black
         color: "white", // Set header text color to white
+        whiteSpace: "normal",
+        wordBreak: "break-word",
+      },
+    },
+    cells: {
+      style: {
+        whiteSpace: "normal", // ✅ allow wrapping
+        wordBreak: "break-word", // ✅ break long strings
+        overflow: "visible", // ✅ allow content to grow
+        textOverflow: "unset", // ✅ no ellipsis
+        paddingLeft: "12px",
+        paddingRight: "12px",
       },
     },
   };
 
   return (
-    <div className="  border border-blue-400">
+    <div className="w-full  border border-blue-400 overflow-x-auto overflow-y-auto">
       <div className="flex  m-3 space-x-3 ">
         <div>
           <label
@@ -140,13 +152,16 @@ export const DataTableVIew = ({ tbl_title, columns, apiData }) => {
           <FaDownload className="mr-1" /> Excel
         </button>
       </div>
-      <DataTable
-        title={tbl_title}
-        columns={columns}
-        data={data}
-        pagination
-        customStyles={customStyles} // Apply custom styles to the table header
-      />
+      <div className="w-full overflow-auto max-h-[600px]">
+        <DataTable
+          title={tbl_title}
+          columns={columns}
+          data={data}
+          pagination
+          customStyles={customStyles} // Apply custom styles to the table header
+         
+        />
+      </div>
     </div>
   );
 };

@@ -54,7 +54,7 @@ export const DataTableCheckbox = ({ headerValue, tableData , selectedRows, setSe
   return (
     <>
       <div className=" h-50  border-2 rounded-sm overflow-x-auto overflow-y-auto">
-        <Table className="border-collapse">
+        <Table className="border-collapse border-b">
           <TableHeader className="bg-gray-300">
             <TableRow>
               <TableHead className="w-10 border-r pl-0 flex items-center justify-center  border-gray-300">
@@ -94,7 +94,7 @@ export const DataTableCheckbox = ({ headerValue, tableData , selectedRows, setSe
                     />
                   </TableCell>
                   {headerValue.map((item) => (
-                    <TableCell key={`${row._id}-${item}`} className="  border-r border-gray-400">
+                    <TableCell key={`${row._id}-${item}`} className="   border-r border-gray-400">
                       {row[item.toLowerCase()]}
                     </TableCell>
                   ))}

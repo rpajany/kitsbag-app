@@ -23,8 +23,8 @@ const app = express();
 // );
 
 const allowedOrigins = [
-  "http://localhost:5173/",
-  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:4000",
   "https://kitsbag-app.onrender.com",
   process.env.FRONTEND_URI,
 ];
@@ -50,10 +50,12 @@ app.use(trimRequest);  // new added
 // routers
 import auth_Routes from "./routes/auth_route.js";
 import mainkit_Routes from "./routes/mainKit_route.js";
-import childKit_Routes from "./routes/childKit_routes.js";
-import order_Routes from "./routes/order_routes.js";
-import uid_Routes from "./routes/uid_routes.js";
-import kitReport_Routes from "./routes/kitreport_routes.js";
+import childKit_Routes from "./routes/childKit_route.js";
+import order_Routes from "./routes/order_route.js";
+import uid_Routes from "./routes/uid_route.js";
+import kitReport_Routes from "./routes/kitreport_route.js";
+import childmaster_Routes from "./routes/childMaster_route.js";
+import stockReport_Routes from "./routes/stockReport_route.js";
 
 // API Routes
 app.use("/api/auth", auth_Routes);
@@ -62,6 +64,8 @@ app.use("/api/child_kit", childKit_Routes);
 app.use("/api/order", order_Routes);
 app.use("/api/uid", uid_Routes);
 app.use("/api/kit_report", kitReport_Routes);
+app.use("/api/child_master", childmaster_Routes);
+app.use("/api/stock_report", stockReport_Routes);
 
 app.get("/api/protected", verifyToken, (req, res) => {
   res.status(200).json({

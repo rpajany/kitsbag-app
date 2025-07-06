@@ -30,7 +30,7 @@ export const StartOrder = ({ load_OrderData }) => {
     // serial_uid: "",
     order_number: "",
     bag_number: "",
-    description: "",
+    // description: "",
 
     order_qty: 0,
     start_qty: 0,
@@ -158,6 +158,7 @@ export const StartOrder = ({ load_OrderData }) => {
         setOrderComboData(fetchedData);
       } else {
         console.warn("Expected an array, got:", fetchedData);
+         setOrderComboData([]);
       }
     } catch (error) {
       console.log("Error Load Order Data:", error);
@@ -209,7 +210,7 @@ export const StartOrder = ({ load_OrderData }) => {
         ...prev,
         _id: selected_kit._id,
         bag_number: selected_kit.bag_number,
-        description: selected_kit.description,
+        // description: selected_kit.description,
         order_qty: selected_kit.order_qty,
         start_qty: selected_kit.start_qty,
       }));
@@ -218,7 +219,7 @@ export const StartOrder = ({ load_OrderData }) => {
       setStartData((prev) => ({
         ...prev,
         bag_number: "",
-        description: "",
+        // description: "",
         order_qty: 0,
         start_qty: 0,
       }));
@@ -517,7 +518,7 @@ export const StartOrder = ({ load_OrderData }) => {
               </div>
             </div>
 
-            <div className="mb-2">
+            {/* <div className="mb-2">
               <label htmlFor="description" className="label-style">
                 Description
               </label>
@@ -530,7 +531,7 @@ export const StartOrder = ({ load_OrderData }) => {
                 autoComplete="off"
                 className="input-style"
               />
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="mb-2">

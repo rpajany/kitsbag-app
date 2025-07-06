@@ -48,6 +48,7 @@ npx shadcn@latest add command
 npx shadcn@latest add table
 npm install @tanstack/react-table
 npx shadcn@latest add checkbox
+npx shadcn@latest add radio-group
 
 This stop / restarts the MongoDB service: 
 net stop MongoDB

@@ -107,13 +107,13 @@ export const InsertMaster = async (req, res, next) => {
   try {
     const master_Data = {
       bag_number: req.body.bag_number,
-      description: req.body.description,
+      // description: req.body.description,
       qty: req.body.qty || 1,
       min_weight: req.body.min_weight,
       max_weight: req.body.max_weight,
       part_level: req.body.part_level,
-      parent_item_code: req.body.parent_item_code,
-      sub_assy: req.body.sub_assy,
+      // parent_item_code: req.body.parent_item_code,
+      // sub_assy: req.body.sub_assy,
       rate: req.body.rate,
     };
 
@@ -153,13 +153,13 @@ export const UpdateMaster = async (req, res, next) => {
 
     const update_Data = {
       bag_number: req.body.bag_number,
-      description: req.body.description,
+      // description: req.body.description,
       qty: req.body.qty,
       min_weight: req.body.min_weight,
       max_weight: req.body.max_weight,
       part_level: req.body.part_level,
-      parent_item_code: req.body.parent_item_code,
-      sub_assy: req.body.sub_assy,
+      // parent_item_code: req.body.parent_item_code,
+      // sub_assy: req.body.sub_assy,
       rate: req.body.rate,
     };
 

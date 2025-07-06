@@ -12,3 +12,4 @@
 2025-06-27T08:30:10.623Z [31merror[39m: Error Load_KitReport : Invalid time value
 2025-06-27T08:30:10.653Z [31merror[39m: Error Load_KitReport : Invalid time value
 2025-06-30T12:16:40.615Z [31merror[39m: Error Load_CompleteKit_ByOrderBag : req is not defined
+2025-07-01T07:36:49.208Z [31merror[39m: Error Insert_Order : Order validation failed: description: Path `description` is required.

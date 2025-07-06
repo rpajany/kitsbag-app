@@ -59,6 +59,20 @@ export const Load_CompletedKit_Service = async (order_number, bag_number) => {
   }
 };
 
+export const Load_CompletedKit_ByDate_Service = async (startUTC, endUTC) => {
+  try {
+    const response = await POST_Api(`/kit_report/load_completeKit_ByDate`, {
+      fromDate: startUTC,
+      toDate: endUTC,
+    });
+    // If the response is successful
+    console.log("2. Get_kitReportData_Service...", response);
+    return response;
+  } catch (error) {
+    return handleApiError(error, "Failed to Load_CompletedKit_Service.");
+  }
+};
+
 export const Update_ScanData_Service = async (
   kitReport_updateDate,
   order_updateData

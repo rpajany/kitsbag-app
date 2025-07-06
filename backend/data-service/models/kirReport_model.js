@@ -8,9 +8,10 @@ const kitReport_schema = new mongoose.Schema(
     actual_weight: { type: Number, trim: true }, // required: true,
     order_number: { type: String, required: true, trim: true },
     status: { type: String, trim: true },
-    pack_date: { type: String, trim: true },
+    pack_date: { type: Date, trim: true }, // ✅ Store as native Date type
     shift: { type: String, trim: true },
-    employee: { type: String, trim: true },
+    employee: { type: String, trim: true }
+ 
   },
   { timestamps: true }
 );

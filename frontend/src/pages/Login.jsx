@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 // import logo from "@/assets/default-user.png"; //"../assets/default-user.png";
-import brand_logo from "@/assets/Audit-Logo.png";
+// import brand_logo from "@/assets/Audit-Logo.png";
 
 export const Login = () => {
   const { user, setUser, checkAuth } = useAuth();
@@ -53,9 +53,9 @@ export const Login = () => {
       {/* <!-- component --> */}
       <div className="h-screen flex items-center justify-center bg-sky-100 px-20">
         {/* <!-- Left: Image --> */}
-        <div className="w-1/2 h-1/2 hidden md:flex flex-col justify-end items-start p-4 ">
+        {/* <div className="w-1/2 h-1/2 hidden md:flex flex-col justify-end items-start p-4 ">
           <img src={brand_logo} alt="Logo" height="50%" width="50%" className="rounded-md"/>
-        </div>
+        </div> */}
 
         {/* <!-- Right: Login Form --> */}
         <div className="w-1/2     ">

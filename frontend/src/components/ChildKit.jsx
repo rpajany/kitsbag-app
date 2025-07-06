@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Load_BagNumber_Service} from '../services/Order_Service';
+import { Load_BagNumber_Service } from "../services/Order_Service";
 import {
   Load_ChildKit_Service,
   Save_ChildKit_Service,
@@ -19,24 +19,25 @@ import { ComboboxDynamic } from "./ComboboxDynamic";
 export const ChildKit = () => {
   const { API_DateRange } = useDateRange();
 
-  const childKit_InitialValue = {
-    _id: "",
-    bag_number: "",
-    part_number: "",
-    description: "",
-    qty: 1,
-    min_weight: 0,
-    max_weight: 0,
-    part_level: "S",
-    parent_item_code: "",
-    sub_assy: "",
-  };
-  const [childKitData, setChildKitData] = useState(childKit_InitialValue);
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comboValue, setComboValue] = useState("");
   const [comboData, setComboData] = useState([]);
   const [apiData, setApiData] = useState([]);
+
+  const childKit_InitialValue = {
+    _id: "",
+    bag_number: comboValue ? comboValue : "",
+    part_number: "",
+    description: "",
+    qty: 1,
+    // min_weight: 0,
+    // max_weight: 0,
+    part_level: "S",
+    parent_item_code: "",
+    sub_assy: "",
+  };
+  const [childKitData, setChildKitData] = useState(childKit_InitialValue);
 
   const load_Data = async () => {
     try {
@@ -71,9 +72,9 @@ export const ChildKit = () => {
   //     try {
   //       const result = await Load_BagNumber_Service();
   //       const fetchedData = result?.data?.data;
-  
+
   //       // console.log("load_BagNumbers :", fetchedData);
-  
+
   //       if (Array.isArray(fetchedData)) {
   //         setComboData(fetchedData);
   //       } else {
@@ -88,44 +89,44 @@ export const ChildKit = () => {
     load_Data();
   }, [API_DateRange]);
 
-    // useEffect(() => {
-    //   load_BagNumbers();
-    // }, []);
+  // useEffect(() => {
+  //   load_BagNumbers();
+  // }, []);
 
-      useEffect(() => {
-        setChildKitData((prev) => ({
-          ...prev,
-       
-          bag_number: comboValue, // Sync Combo Box to orderData
-        }));
-      }, [ comboValue]);
+  useEffect(() => {
+    setChildKitData((prev) => ({
+      ...prev,
+
+      bag_number: comboValue, // Sync Combo Box to orderData
+    }));
+  }, [comboValue]);
 
   // console.log("apiData :", apiData);
 
   // This function will be triggered when Combobox opens
-    const fetch_OrderComboData = async () => {
-      try {
-        // Small delay if needed
-        await new Promise((resolve) => setTimeout(resolve, 100)); //300
-  
-        const result = await Load_BagNumber_Service();
-        const fetchedData = result?.data?.data;
-  
-        // console.log("load_BagNumbers:", fetchedData);
-  
-        if (Array.isArray(fetchedData)) {
-          setComboData(fetchedData);
-        } else {
-          console.warn("Expected an array, got:", fetchedData);
-        }
-      } catch (error) {
-        console.log("Error Load Order Data:", error);
+  const fetch_OrderComboData = async () => {
+    try {
+      // Small delay if needed
+      await new Promise((resolve) => setTimeout(resolve, 100)); //300
+
+      const result = await Load_BagNumber_Service();
+      const fetchedData = result?.data?.data;
+
+      // console.log("load_BagNumbers:", fetchedData);
+
+      if (Array.isArray(fetchedData)) {
+        setComboData(fetchedData);
+      } else {
+        console.warn("Expected an array, got:", fetchedData);
       }
-    };
+    } catch (error) {
+      console.log("Error Load Order Data:", error);
+    }
+  };
 
   const handle_InputChange = (e) => {
     const { name, value } = e.target;
-    const numericFields = ["qty", "min_weight", "max_weight"];
+    const numericFields = ["qty"]; // , "min_weight", "max_weight"
     setChildKitData((preve) => ({
       ...preve,
       [name]: numericFields.includes(name) ? parseFloat(value) || 0 : value,
@@ -218,16 +219,16 @@ export const ChildKit = () => {
       selector: (row) => row.qty,
       sortable: true,
     },
-    {
-      name: "Min_Weight",
-      selector: (row) => row.min_weight,
-      sortable: true,
-    },
-    {
-      name: "Max_Weight",
-      selector: (row) => row.max_weight,
-      sortable: true,
-    },
+    // {
+    //   name: "Min_Weight",
+    //   selector: (row) => row.min_weight,
+    //   sortable: true,
+    // },
+    // {
+    //   name: "Max_Weight",
+    //   selector: (row) => row.max_weight,
+    //   sortable: true,
+    // },
     {
       name: "Part_Level",
       selector: (row) => row.part_level,
@@ -294,12 +295,12 @@ export const ChildKit = () => {
                   comboData={comboData}
                 /> */}
 
-                 <ComboboxDynamic
-                            comboValue={comboValue}
-                            setComboValue={setComboValue}
-                            comboData={comboData}
-                            fetchDataOnOpen={fetch_OrderComboData} // 🔁 Pass the function as prop
-                          />
+                <ComboboxDynamic
+                  comboValue={comboValue}
+                  setComboValue={setComboValue}
+                  comboData={comboData}
+                  fetchDataOnOpen={fetch_OrderComboData} // 🔁 Pass the function as prop
+                />
               </div>
               <div className="mb-2">
                 <label htmlFor="bag_number" className="label-style">
@@ -313,7 +314,7 @@ export const ChildKit = () => {
                   onChange={handle_InputChange}
                   placeholder="Enter Item Code."
                   autoComplete="off"
-                   readOnly
+                  readOnly
                   className="input-style bg-gray-200"
                 />
               </div>
@@ -369,14 +370,14 @@ export const ChildKit = () => {
               />
             </div>
 
-            <div className=" grid md:grid-cols-2 gap-4">
+            {/* <div className=" grid md:grid-cols-2 gap-4"> 
               <div className="mb-2">
                 <label htmlFor="min_weight" className="label-style">
                   Min Weight
                 </label>
                 <input
-                  type="number"
-                  inputMode="decimal" //  input mode for mobile optimization
+                  type="number"               
+                  inputMode="decimal" 
                   min="0"
                   step="0.01"
                   id="min_weight"
@@ -395,7 +396,7 @@ export const ChildKit = () => {
                 </label>
                 <input
                   type="number"
-                  inputMode="decimal" //  input mode for mobile optimization
+                  inputMode="decimal" 
                   min="0"
                   step="0.01"
                   id="max_weight"
@@ -407,7 +408,7 @@ export const ChildKit = () => {
                   className="input-style"
                 />
               </div>
-            </div>
+            </div>*/}
 
             <button
               className={`${

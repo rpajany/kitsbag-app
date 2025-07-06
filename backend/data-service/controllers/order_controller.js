@@ -245,7 +245,8 @@ export const Insert_Order = async (req, res, next) => {
   try {
     const order_Data = {
       order_number: req.body.order_number,
-      order_date: req.body.order_date,
+      // order_date: req.body.order_date,
+      order_date: new Date(req.body.order_date),
       bag_number: req.body.bag_number,
       description: req.body.description,
       order_qty: req.body.order_qty,
@@ -263,6 +264,15 @@ export const Insert_Order = async (req, res, next) => {
     logger.info("Insert_Order : Successful !", {
       timestamp: new Date().toISOString(),
     });
+
+    if (!newOrder) {
+      console.log("Error Order Insert..");
+      return res.status(404).json({
+        message: "Error Order Insert..",
+        success: false,
+        error: true,
+      });
+    }
 
     res.status(201).json({
       data: newOrder,
@@ -290,7 +300,8 @@ export const Update_Order = async (req, res, next) => {
 
     const update_Data = {
       order_number: req.body.order_number,
-      order_date: req.body.order_date,
+      // order_date: req.body.order_date,
+      order_date: new Date(req.body.order_date),
       bag_number: req.body.bag_number,
       description: req.body.description,
       order_qty: req.body.order_qty,

@@ -35,7 +35,7 @@ export const PartLabel = () => {
     order_number: "",
     order_date: "",
     bag_number: "",
-    description: "",
+    // description: "",
     order_qty: 1,
     delivery_date: "",
     rate: 0,
@@ -58,6 +58,7 @@ export const PartLabel = () => {
     "Qty",
   ]); // []
   const [tableData, setTableData] = useState([]); // [] sampleData
+  const [selectedRows, setSelectedRows] = useState([]); // table row select
 
   const { printZPL } = useZebraPrinter();
 
@@ -102,25 +103,25 @@ export const PartLabel = () => {
   // };
 
   // This function will be triggered when Combobox opens
-    const fetch_BagComboData = async () => {
-      try {
-        // Small delay if needed
-        await new Promise((resolve) => setTimeout(resolve, 100)); //300
-  
-        const result = await Load_BagNumber_Service();
-        const fetchedData = result?.data?.data;
-  
-        // console.log("load_BagNumbers:", fetchedData);
-  
-        if (Array.isArray(fetchedData)) {
-          setComboData(fetchedData);
-        } else {
-          console.warn("Expected an array, got:", fetchedData);
-        }
-      } catch (error) {
-        console.log("Error Load Order Data:", error);
+  const fetch_BagComboData = async () => {
+    try {
+      // Small delay if needed
+      await new Promise((resolve) => setTimeout(resolve, 100)); //300
+
+      const result = await Load_BagNumber_Service();
+      const fetchedData = result?.data?.data;
+
+      // console.log("load_BagNumbers:", fetchedData);
+
+      if (Array.isArray(fetchedData)) {
+        setComboData(fetchedData);
+      } else {
+        console.warn("Expected an array, got:", fetchedData);
       }
-    };
+    } catch (error) {
+      console.log("Error Load Order Data:", error);
+    }
+  };
 
   const load_Bag_PartKits = async (comboValue) => {
     try {
@@ -134,6 +135,7 @@ export const PartLabel = () => {
           setTableData(fetchedData);
         } else {
           console.warn("Expected an array, got:", fetchedData);
+          setTableData([]);
         }
       }
     } catch (error) {
@@ -157,10 +159,106 @@ export const PartLabel = () => {
   }, [comboValue]);
 
   // print zpl function ...
-  const handlePrint = () => {
+  const handlePrint = (e) => {
+    e.preventDefault();
     console.log("clicked !!");
-    const zpl = "^XA^FO50,50^ADN,36,20^FDHello from React^FS^XZ";
-    printZPL(zpl);
+
+    if (selectedRows.length <= 0) {
+      toast.info("No print row Selected !");
+      return;
+    }
+
+    // const zpl_Data = `^XA^FO50,50^ADN,36,20^FDHello from React^FS^XZ`;
+
+    // selectedRows.forEach((item) => {
+    //   const print_Speed = 4;
+    //   const print_Dark = 20;
+
+    //   // Extracting dynamic values from item
+    //   const item_partNumber = item.part_number;
+    //   const item_description = item.description;
+    //   const itemQty = item.qty || 1;
+    //   const aDate = new Date().toLocaleDateString("en-GB").split("/").join("-"); // e.g., 01-07-2025
+
+    //   // For barcode split: first 3 chars and the rest
+    //   const i_code1 = item_partNumber.slice(0, 3).toUpperCase();
+    //   const i_code2 = item_partNumber.slice(3).toUpperCase();
+
+    //   // Build the ZPL lines
+    //   const zplLines = [
+    //     "CT~~CD,~CC^~CT~",
+    //     `^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR${print_Speed},${print_Speed}~SD${print_Dark}^JUS^LRN^CI0^XZ`,
+    //     "^XA",
+    //     "^MMT",
+    //     "^PW480",
+    //     "^LL0240",
+    //     "^LS0",
+    //     "^FO0,32^GFA,00768,00768,00012,:Z64:eJzt0DEOAiEQBdBPMKExwQOoXMHSDjsvZMIWJpBYeC08yCYcgXILwrgRcCm0sPdXL5+CmQF+z258jGO1pEC5c6oW5L/Y2alzrObkdDMjLM5Q4YORIX3rE1QzhqXHFeLtI7hzhadhxVEfwmG9eLPlrBl7sPIZi1DgZSA2QXe2EMV8thNlMZFgfbVMIC97l0PIDAqyHE4Ro6iq82zd9Zpe1nTrfKdoyTVPVGzM2VyMwT8/5Aka7mk0:DA29",
+    //     "^FO9,16^GB459,221,4^FS",
+    //     "^FO12,100^GB399,0,4^FS",
+    //     "^FO91,17^GB0,87,3^FS",
+    //     "^FO409,18^GB0,215,4^FS",
+    //     `^FT105,45^A0N,16,16^FH\\^FDItem code : ${item_partNumber}^FS`,
+    //     "^BY2,3,39^FT106,92^BCN,,N,N",
+    //     `^FD>;${i_code1}>6${i_code2}^FS`,
+    //     `^FT18,159^A0N,16,16^FH\\^FDQty: ${itemQty} No's^FS`,
+    //     `^FT17,132^A0N,16,16^FH\\^FDDesc: ${item_description}^FS`,
+    //     `^FT431,230^A0B,12,21^FH\\^FD${aDate}^FS`,
+    //     `^FT33,85^A0N,11,12^FH\\^FDWITTUR^FS`,
+    //     "^PQ1,0,1,Y^XZ",
+    //     "",
+    //   ];
+
+    //   const zplData = zplLines.join("\n");
+
+    //   printZPL(zplData);
+    // });
+
+    // Single ZPL Data Generation for All Rows :
+    const print_Speed = 4;
+    const print_Dark = 20;
+    const aDate = new Date().toLocaleDateString("en-GB").split("/").join("-");
+
+    let fullZplData = "";
+
+    // Loop through each selected row and build the ZPL label
+    selectedRows.forEach((item) => {
+      const item_partNumber = item.part_number;
+      const item_description = item.description;
+      const itemQty = item.qty;
+
+      const i_code1 = item_partNumber.slice(0, 3).toUpperCase();
+      const i_code2 = item_partNumber.slice(3).toUpperCase();
+
+      const zplLines = [
+        "CT~~CD,~CC^~CT~",
+        `^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR${print_Speed},${print_Speed}~SD${print_Dark}^JUS^LRN^CI0^XZ`,
+        "^XA",
+        "^MMT",
+        "^PW480",
+        "^LL0240",
+        "^LS0",
+        "^FO0,32^GFA,00768,00768,00012,:Z64:eJzt0DEOAiEQBdBPMKExwQOoXMHSDjsvZMIWJpBYeC08yCYcgXILwrgRcCm0sPdXL5+CmQF+z258jGO1pEC5c6oW5L/Y2alzrObkdDMjLM5Q4YORIX3rE1QzhqXHFeLtI7hzhadhxVEfwmG9eLPlrBl7sPIZi1DgZSA2QXe2EMV8thNlMZFgfbVMIC97l0PIDAqyHE4Ro6iq82zd9Zpe1nTrfKdoyTVPVGzM2VyMwT8/5Aka7mk0:DA29",
+        "^FO9,16^GB459,221,4^FS",
+        "^FO12,100^GB399,0,4^FS",
+        "^FO91,17^GB0,87,3^FS",
+        "^FO409,18^GB0,215,4^FS",
+        `^FT105,45^A0N,16,16^FH\\^FDItem code : ${item_partNumber}^FS`,
+        "^BY2,3,39^FT106,92^BCN,,N,N",
+        `^FD>;${i_code1}>6${i_code2}^FS`,
+        `^FT18,159^A0N,16,16^FH\\^FDQty: ${itemQty} No's^FS`,
+        `^FT17,132^A0N,16,16^FH\\^FDDesc: ${item_description}^FS`,
+        `^FT431,230^A0B,12,21^FH\\^FD${aDate}^FS`,
+        `^FT33,85^A0N,11,12^FH\\^FDWITTUR^FS`,
+        "^PQ1,0,1,Y^XZ",
+        "",
+      ];
+
+      fullZplData += zplLines.join("\n") + "\n";
+    });
+
+    // Send to printer
+    printZPL(fullZplData);
   };
 
   const handle_InputChange = (e) => {
@@ -323,7 +421,7 @@ export const PartLabel = () => {
               <div className="grid grid-cols-2 gap-2">
                 <div className="mb-2">
                   <div className="grid grid-cols-2 gap-4">
-                     <div>
+                    <div>
                       <label htmlFor="" className="label-style">
                         Search : Bag Number
                       </label>
@@ -333,14 +431,14 @@ export const PartLabel = () => {
                         comboData={comboData}
                       /> */}
 
-                        <ComboboxDynamic
-                            comboValue={comboValue}
-                            setComboValue={setComboValue}
-                            comboData={comboData}
-                            fetchDataOnOpen={fetch_BagComboData} // 🔁 Pass the function as prop
-                          />
+                      <ComboboxDynamic
+                        comboValue={comboValue}
+                        setComboValue={setComboValue}
+                        comboData={comboData}
+                        fetchDataOnOpen={fetch_BagComboData} // 🔁 Pass the function as prop
+                      />
                     </div>
-                    
+
                     <div>
                       <label htmlFor="bag_number" className="label-style">
                         Bag Number
@@ -356,13 +454,11 @@ export const PartLabel = () => {
                         className="input-style bg-gray-200"
                       />
                     </div>
-
-                   
                   </div>
                 </div>
               </div>
 
-              <div className="mb-2">
+              {/* <div className="mb-2">
                 <label htmlFor="description" className="label-style">
                   Description
                 </label>
@@ -375,12 +471,14 @@ export const PartLabel = () => {
                   autoComplete="off"
                   className="input-style"
                 />
-              </div>
+              </div> */}
 
-              <div className="w-full   rounded-sm mt-4">
+              <div className=" flex w-full   ">
                 <DataTableCheckbox
                   headerValue={headerValue}
                   tableData={tableData}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
                 />
               </div>
 

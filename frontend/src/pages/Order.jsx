@@ -14,7 +14,7 @@ import {
   DatePickerModal,
   CalenderModel,
   Combobox,
-  ComboboxDynamic
+  ComboboxDynamic,
 } from "../components";
 import { parse, format } from "date-fns";
 import { SweetAlert_Delete, DateFormat } from "../utils/custom";
@@ -30,14 +30,14 @@ export const Order = () => {
     order_number: "",
     order_date: "",
     bag_number: "",
-    description: "",
+    // description: "",
     order_qty: 1,
     start_qty: 0,
     complete_qty: 0,
     pending_qty: 0,
     status: "Ordered",
     delivery_date: "",
-    rate: 0,
+    // rate: 0,
   };
 
   const [orderData, setOrderData] = useState(order_InitialValue);
@@ -101,26 +101,26 @@ export const Order = () => {
   //   }
   // };
 
-   // This function will be triggered when Combobox opens
-    const fetch_BagComboData = async () => {
-      try {
-        // Small delay if needed
-        await new Promise((resolve) => setTimeout(resolve, 100)); //300
-  
-        const result = await Load_BagNumber_Service();
-        const fetchedData = result?.data?.data;
-  
-        // console.log("load_BagNumbers:", fetchedData);
-  
-        if (Array.isArray(fetchedData)) {
-          setComboData(fetchedData);
-        } else {
-          console.warn("Expected an array, got:", fetchedData);
-        }
-      } catch (error) {
-        console.log("Error Load Order Data:", error);
+  // This function will be triggered when Combobox opens
+  const fetch_BagComboData = async () => {
+    try {
+      // Small delay if needed
+      await new Promise((resolve) => setTimeout(resolve, 100)); //300
+
+      const result = await Load_BagNumber_Service();
+      const fetchedData = result?.data?.data;
+
+      // console.log("load_BagNumbers:", fetchedData);
+
+      if (Array.isArray(fetchedData)) {
+        setComboData(fetchedData);
+      } else {
+        console.warn("Expected an array, got:", fetchedData);
       }
-    };
+    } catch (error) {
+      console.log("Error Load Order Data:", error);
+    }
+  };
 
   useEffect(() => {
     load_OrderData();
@@ -250,11 +250,11 @@ export const Order = () => {
       selector: (row) => row.bag_number,
       sortable: true,
     },
-    {
-      name: "Description",
-      selector: (row) => row.description,
-      sortable: true,
-    },
+    // {
+    //   name: "Description",
+    //   selector: (row) => row.description,
+    //   sortable: true,
+    // },
     {
       name: "Order_Qty",
       selector: (row) => row.order_qty,
@@ -271,11 +271,11 @@ export const Order = () => {
       selector: (row) => row.delivery_date,
       sortable: true,
     },
-    {
-      name: "Rate",
-      selector: (row) => row.rate,
-      sortable: true,
-    },
+    // {
+    //   name: "Rate",
+    //   selector: (row) => row.rate,
+    //   sortable: true,
+    // },
     {
       name: "Status",
       selector: (row) => row.status,
@@ -379,12 +379,12 @@ export const Order = () => {
                         comboData={comboData}
                       /> */}
 
-                       <ComboboxDynamic
-                            comboValue={comboValue}
-                            setComboValue={setComboValue}
-                            comboData={comboData}
-                            fetchDataOnOpen={fetch_BagComboData} // 🔁 Pass the function as prop
-                          />
+                      <ComboboxDynamic
+                        comboValue={comboValue}
+                        setComboValue={setComboValue}
+                        comboData={comboData}
+                        fetchDataOnOpen={fetch_BagComboData} // 🔁 Pass the function as prop
+                      />
                     </div>
 
                     {/* <div>
@@ -405,7 +405,7 @@ export const Order = () => {
                   </div>
                 </div>
 
-                <div className="mb-2">
+                {/* <div className="mb-2">
                   <label htmlFor="description" className="label-style">
                     Description
                   </label>
@@ -418,7 +418,7 @@ export const Order = () => {
                     autoComplete="off"
                     className="input-style"
                   />
-                </div>
+                </div> */}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="mb-2">
@@ -461,13 +461,13 @@ export const Order = () => {
                   </div>
                 </div>
 
-                <div className="mb-2">
+                {/* <div className="mb-2">
                   <label htmlFor="rate" className="label-style">
                     Rate / Kit
                   </label>
                   <input
                     type="number"
-                    inputMode="decimal" //  input mode for mobile optimization
+                    inputMode="decimal"  
                     min="0"
                     step="1"
                     id="rate"
@@ -478,7 +478,7 @@ export const Order = () => {
                     autoComplete="off"
                     className="input-style"
                   />
-                </div>
+                </div> */}
 
                 <button
                   className={`${

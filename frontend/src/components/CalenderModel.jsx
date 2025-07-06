@@ -17,7 +17,7 @@ export const CalenderModel = ({ date, setDate }) => {
     <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" >
+          <Button variant="outline" className=" ">
             <CalculatorIcon />
             {/* {date ? format(date, "PPP") : <span>Pick a Date</span>} */}
             {date ? format(date, "dd-MM-yyyy") : <span>Pick a Date</span>}

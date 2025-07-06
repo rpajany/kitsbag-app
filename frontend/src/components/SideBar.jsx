@@ -49,19 +49,28 @@ import {
   LayoutDashboard,
   Barcode,
   BaggageClaim,
-  Weight
+  NotepadText,
+  NotebookText,
+  Notebook,
+  Blocks,
+  Weight,
 } from "lucide-react";
 // Menu items.
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {
-    title: "Master",
+    title: "Bag Master",
     url: "master",
     icon: Inbox,
+  },
+    {
+    title: "Child Master",
+    url: "child_master",
+    icon: Blocks,
   },
   {
     title: "Order",
@@ -78,19 +87,26 @@ const items = [
     url: "weightlabel",
     icon: Weight,
   },
+
+  {
+    title: "BinStock",
+    url: "bin_stock",
+    icon: Blocks,
+  },
 ];
 
 export const SideBar = () => {
   return (
     <Sidebar collapsible="icon" className="relative top-0 left-0 ">
-      <SidebarHeader>
-        <LayoutDashboard />
-        {/* Dashboard */}
-      </SidebarHeader>
+      {/* Dashboard */}
+      {/* <SidebarHeader>
+        <LayoutDashboard />      
+      </SidebarHeader> */}
+
       <SidebarSeparator />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -114,9 +130,9 @@ export const SideBar = () => {
         <Collapsible defaultOpen className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
-              <CollapsibleTrigger>
-                <TableOfContents />
-                Help
+              <CollapsibleTrigger className="bg-gray-400 px-3">
+                <Notebook className="mr-2" />
+                Report
                 <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
@@ -124,12 +140,30 @@ export const SideBar = () => {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  <SidebarMenuItem>
+                  <SidebarMenuItem className="px-6">
                     <SidebarMenuButton asChild>
-                      <a href="/#">
-                        <ProjectorIcon />
-                        Sell Projector
-                      </a>
+                      <Link to="/kit_report">
+                        <NotepadText />
+                        Kit Report
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem className="px-6">
+                    <SidebarMenuButton asChild>
+                      <Link to="/order_report">
+                        <NotepadText />
+                        Order Report
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem className="px-6">
+                    <SidebarMenuButton asChild>
+                      <Link to="/bag_report">
+                        <NotepadText />
+                        Bag Report
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -139,7 +173,7 @@ export const SideBar = () => {
         </Collapsible>
 
         {/* nested */}
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel>Nested Item</SidebarGroupLabel>
 
           <SidebarGroupContent>
@@ -173,7 +207,7 @@ export const SideBar = () => {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
       </SidebarContent>
 
       <SidebarSeparator />
