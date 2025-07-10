@@ -137,6 +137,7 @@ export const KitReport = () => {
         <div className="bg-gray-400 text-white px-5 py-2 rounded-t-sm">
           Kit Report
         </div>
+    
         <div className="m-2">
           <div className="flex mb-4">
             <DateRangePicker />

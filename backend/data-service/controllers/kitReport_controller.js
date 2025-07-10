@@ -124,6 +124,67 @@ export const Load_CompleteKit_ByOrderBag = async (req, res, next) => {
   }
 };
 
+export const Load_AllKit_ByOrderBag = async (req, res, next) => {
+  try {
+    const { order_number, bag_number } = req.body;
+
+    // Input validation
+    if (!order_number || !bag_number) {
+      return res.status(400).json({
+        message: "order_number or bag_number is missing.",
+        success: false,
+        error: true,
+      });
+    }
+
+    const KitReport_data = await KitReport.find({
+      order_number,
+      bag_number,
+      // status: "Complete", // ✅ Equal to
+      // status: { $ne: "Start" }, //  is not equal to
+    }).sort({ _id: -1 });
+
+    // if no data found..
+    if (KitReport_data.length === 0) {
+      return res.status(404).json({
+        message:
+          "No KitReport found for the given order_number and bag_number.",
+        success: false,
+        error: false,
+        data: [],
+      });
+    }
+
+    // if data found format date...
+    const formattedData = KitReport_data.map((row) => {
+      const rowObj = row.toObject();
+      return {
+        ...rowObj,
+        pack_date: row.pack_date
+          ? format(new Date(row.pack_date), "dd-MM-yyyy")
+          : null,
+      };
+    });
+
+    return res.status(200).json({
+      data: formattedData,
+      message: "Load_AllKit_ByOrderBag Successfully",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    console.error("Error Load_AllKit_ByOrderBag :", error);
+
+    logger.error("Error Load_AllKit_ByOrderBag :", {
+      message: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString(),
+    });
+
+    next(error); // pass to centralized error handler
+  }
+};
+
 export const Load_CompleteKit_ByDate = async (req, res, next) => {
   try {
     const { fromDate, toDate } = req.body;

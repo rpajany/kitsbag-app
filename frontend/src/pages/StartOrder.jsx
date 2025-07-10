@@ -4,9 +4,11 @@ import {
   CalenderModel,
   Combobox,
   ComboboxDynamic,
+  DataTableCheckbox,
 } from "../components";
 import {
   Load_KitReport_Service,
+  Load_AllKitReport_Service,
   Get_OrderData_Service,
   Load_OrderNumber_Service,
   Save_StartOrder_Service,
@@ -14,6 +16,7 @@ import {
   Get_SerialUID_Service,
 } from "../services/StartOrder_Service";
 import { DateRangePicker } from "../components";
+import { useZebraPrinter } from "../services/BrowserPrint_Service";
 import { useDateRange } from "@/context/DateRangeContext";
 import { Load_Order_Service } from "../services/Order_Service";
 import { parse, format } from "date-fns";
@@ -24,6 +27,7 @@ import { RiDeleteBin2Line } from "react-icons/ri";
 
 export const StartOrder = ({ load_OrderData }) => {
   const { API_DateRange } = useDateRange();
+  const { printZPL } = useZebraPrinter();
 
   const startOrder_InitialValue = {
     _id: "",
@@ -55,12 +59,52 @@ export const StartOrder = ({ load_OrderData }) => {
   const [bagComboValue, setBagComboValue] = useState("");
   const [bagComboData, setBagComboData] = useState([]);
 
-  const load_Data = async () => {
+  const [headerValue, setHeaderValue] = useState([
+    "Serial_Number",
+    "Order_Number",
+    "Bag_Number",
+    "Status",
+  ]); // []
+  const [selectedRows, setSelectedRows] = useState([]); // table row select
+
+  // const load_Data = async () => {
+  //   try {
+  //     const { startDate, endDate } = API_DateRange(); // get ISO strings
+  //     setLoading(true);
+
+  //     const result = await Load_KitReport_Service(startDate, endDate);
+  //     if (result?.data?.success) {
+  //       const fetchedData = result?.data?.data;
+  //       console.log("Load Data :", fetchedData);
+
+  //       if (Array.isArray(fetchedData) && fetchedData.length >= 1) {
+  //         setApiData([...fetchedData]); // force new reference even if empty
+  //       } else if (fetchedData.length === 0) {
+  //         // console.warn("Expected an array, got:", fetchedData);
+  //         console.log("Setting empty data: []");
+  //         setApiData([]);
+  //       }
+  //     } else if (result.error) {
+  //       toast.error(result.message); // or use dialog, alert, etc.
+  //     }
+  //   } catch (error) {
+  //     console.log("Error Load Order Data:", error);
+  //   }
+  // };
+
+  const load_AllkitReport_ByOrderBag = async () => {
     try {
-      const { startDate, endDate } = API_DateRange(); // get ISO strings
+      console.log("load_AllkitReport_ByOrderBag - called !!");
+      if (!orderComboValue || !bagComboValue) {
+        console.log("Error: order_number/bag_number is missing");
+      }
+
       setLoading(true);
 
-      const result = await Load_KitReport_Service(startDate, endDate);
+      const result = await Load_AllKitReport_Service(
+        orderComboValue,
+        bagComboValue
+      );
       if (result?.data?.success) {
         const fetchedData = result?.data?.data;
         console.log("Load Data :", fetchedData);
@@ -76,7 +120,9 @@ export const StartOrder = ({ load_OrderData }) => {
         toast.error(result.message); // or use dialog, alert, etc.
       }
     } catch (error) {
-      console.log("Error Load Order Data:", error);
+      console.log("Error load_kitReport_ByOrderBag :", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,6 +172,8 @@ export const StartOrder = ({ load_OrderData }) => {
 
   console.log("bagComboData :", bagComboData);
   console.log("orderData :", orderData);
+  // console.log("startData :", startData);
+
   // const load_OrderNumbers = async () => {
   //   try {
   //     const result = await Load_OrderNumber_Service();
@@ -158,19 +206,20 @@ export const StartOrder = ({ load_OrderData }) => {
         setOrderComboData(fetchedData);
       } else {
         console.warn("Expected an array, got:", fetchedData);
-         setOrderComboData([]);
+        setOrderComboData([]);
       }
     } catch (error) {
       console.log("Error Load Order Data:", error);
     }
   };
 
-  useEffect(() => {
-    load_Data();
-    // Get_SerialUID();
+  // useEffect(() => {
+  //     load_Data();
+  // }, [API_DateRange]);
 
-    // load_OrderNumbers();
-  }, [API_DateRange]);
+  useEffect(() => {
+    load_AllkitReport_ByOrderBag();
+  }, [orderComboValue, bagComboValue]);
 
   useEffect(() => {
     Get_DataByOrderNumber(orderComboValue);
@@ -248,8 +297,6 @@ export const StartOrder = ({ load_OrderData }) => {
   //   }));
   // };
 
-  // console.log("startData :", startData);
-
   const handle_FormSubmit = async (e) => {
     e.preventDefault();
 
@@ -314,7 +361,8 @@ export const StartOrder = ({ load_OrderData }) => {
       setBagComboData([]);
       // setOrderDate(new Date()); // ✅ Reset calendar date
       // setDeliveryDate(new Date()); // ✅ Reset calendar date
-      await load_Data();
+      // await load_Data(); not used...
+      await load_AllkitReport_ByOrderBag();
       load_OrderData(); // call function in order page
     }
   };
@@ -322,6 +370,80 @@ export const StartOrder = ({ load_OrderData }) => {
   // const handleEdit = async (row) => {};
 
   // const handleDelete = async (row) => {};
+
+  // print zpl function ...
+  const handlePrint = (e) => {
+    e.preventDefault();
+
+    if (selectedRows.length <= 0) {
+      toast.info("No print row Selected !");
+      return;
+    }
+
+    // Single ZPL Data Generation for All Rows :
+    const print_Speed = 4;
+    const print_Dark = 20;
+    const aDate = new Date().toLocaleDateString("en-GB").split("/").join("-");
+
+    let fullZplData = "";
+
+    // Loop through each selected row and build the ZPL label
+    selectedRows.forEach((item) => {
+      const serialNumber = item.serial_number;
+      const orderNumber = item.order_number;
+      const bagNumber = item.bag_number;
+
+      // const itemQty = item.qty;
+
+      const i_code1 = bagNumber.slice(0, 3).toUpperCase();
+      const i_code2 = bagNumber.slice(3).toUpperCase();
+
+      const O_Num1 = orderNumber.substring(0, 4);
+      const O_Num2 = orderNumber.substring(4, 8);
+      const O_Num3 = orderNumber.substring(8);
+
+      // 200 dpi label ......
+      const zplLines = [
+        "CT~~CD,~CC^~CT~",
+        `^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR${print_Speed},${print_Speed}~SD${print_Dark}^JUS^LRN^CI0^XZ`,
+        "^XA",
+        "^MMT",
+        "^PW831",
+        "^LL1183",
+        "^LS0",
+        "^FO32,992^GFA,01536,01536,00012,:Z64:eJztkzEOgzAMRY0QYmTsmKOQW3TkEl0rerQegSMw9gAMnXCJY5IfmgqGDh2aAVmPb8f+ion+59ipITa3EBY9SDjyjm2IOfKiZ5BH3jGDPPCKI2+B90u81m9y+tGLhFsfC3+67pVfrST4O32C8H6K/fO8fErlPIR5mV2lRrmrUW97d/y+JKz8ATwMtYQz8Cnjwaa+TPDeT9Knk2v/fmDPh/UnkZd7fqHo/5jeXUCr5oP/yE+gL3nPf/qW/5KgXBKUH/KfgaP/I3BK/cd7jXIZQLlN/W/2/Tf5d4v+4zs/g/+4F13Of5K1i/vVwtuqgOOeJvuLe12DnoCr/yoCXtAvnxfXtQp8:66A3",
+        "^FO28,23^GB776,1132,4^FS",
+        "^FO194,27^GB0,1129,2^FS",
+        "^FO31,955^GB165,0,3^FS",
+        "^FT128,806^A0B,45,43^FH\\^FDPRODUCT IDENTIFICATION LABEL^FS",
+        `^FT254,1116^A0B,31,28^FH\\^FDBag Number : ${bagNumber}^FS`,
+        "^BY2,3,55^FT323,389^BCB,,N,N",
+        `^FD>:${O_Num1}>5${O_Num2}>6${O_Num3}^FS`,
+        "^BY2,3,55^FT329,1116^BCB,,N,N",
+        `^FD>;${i_code1}>6${i_code2}^FS`,
+        "^BY2,3,56^FT514,1116^BCB,,N,N",
+        `^FD>;${serialNumber}^FS`,
+        "^FT585,1085^A0B,31,28^FH\\^FD'NOT FOR RETAIL SALE'^FS",
+        "^FT599,602^A0B,31,28^FH\\^FDSupplier ;^FS",
+        "^FT651,600^A0B,31,28^FH\\^FDWittur Elevator Components India Pvt Ltd.,^FS",
+        "^FT689,600^A0B,31,28^FH\\^FDSIPCOT Industrial Estate,^FS",
+        "^FT727,600^A0B,31,28^FH\\^FDSriperumbudur,^FS",
+        "^FT765,600^A0B,31,28^FH\\^FDTamilNadu - 602105^FS",
+        `^FT381,389^A0B,31,28^FH\\^FDDate : ${aDate}^FS`,
+        `^FT251,389^A0B,31,28^FH\\^FDOrder : ${orderNumber}^FS`,
+        `^FT437,1116^A0B,31,28^FH\\^FDSerial.No: ${serialNumber}^FS`,
+        // `^FT381,1116^A0B,31,28^FH\\^FDItem Name : ${itemName}^FS`,
+        "^FT159,1111^A0B,31,28^FH\\^FDWITTUR^FS",
+        "^PQ1,0,1,Y^XZ",
+        "",
+      ];
+
+      fullZplData += zplLines.join("\n") + "\n";
+    });
+
+    // Send all label's to printer
+    printZPL(fullZplData);
+  };
 
   // Define table columns
   const columns = [
@@ -451,7 +573,8 @@ export const StartOrder = ({ load_OrderData }) => {
                   setComboValue={setOrderComboValue}
                   comboData={orderComboData}
                   fetchDataOnOpen={fetch_OrderComboData} // 🔁 Pass the function as prop
-                />
+               styleCustom={"border border-yellow-400"}
+               />
               </div>
 
               <div className="mb-2">
@@ -482,6 +605,7 @@ export const StartOrder = ({ load_OrderData }) => {
                     comboValue={bagComboValue}
                     setComboValue={setBagComboValue}
                     comboData={bagComboData}
+                     styleCustom={"border border-purple-400"}
                   />
                 </div>
                 {/* <div>
@@ -565,10 +689,10 @@ export const StartOrder = ({ load_OrderData }) => {
         </div>
         <div className="w-full border-2 rounded-sm">
           <div className="bg-gray-400 text-white px-5 py-2 rounded-t-sm">
-            Report
+            Print (Main Label)
           </div>
           <div className="m-2">
-            <div className="flex mb-4">
+            {/* <div className="flex mb-4">
               <DateRangePicker />
             </div>
             <DataTableVIew
@@ -576,7 +700,24 @@ export const StartOrder = ({ load_OrderData }) => {
               tbl_title={""}
               columns={columns}
               apiData={apiData}
+            /> */}
+
+            <DataTableCheckbox
+              headerValue={headerValue}
+              tableData={apiData}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
             />
+          </div>
+
+          <div className="m-2">
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="bg-blue-600 text-white px-2 py-1 rounded-sm hover:cursor-pointer hover:bg-blue-500"
+            >
+              Print label
+            </button>
           </div>
         </div>
       </div>

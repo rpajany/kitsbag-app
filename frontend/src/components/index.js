@@ -14,3 +14,4 @@ export { Combobox } from "./Combobox";
 export { ComboboxDynamic } from "./ComboboxDynamic";
 export { MultiAutoComplete } from "./MultiAutoComplete";
 export { RadioGroupModel } from "./RadioGroupModel";
+export { DoughnutChart } from "./DoughnutChart";

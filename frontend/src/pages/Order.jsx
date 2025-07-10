@@ -384,7 +384,8 @@ export const Order = () => {
                         setComboValue={setComboValue}
                         comboData={comboData}
                         fetchDataOnOpen={fetch_BagComboData} // 🔁 Pass the function as prop
-                      />
+                         styleCustom={"border border-purple-400"}
+                     />
                     </div>
 
                     {/* <div>

@@ -41,6 +41,28 @@ export const Load_KitReport_Service = async (startDate, endDate) => {
     return false;
   }
 };
+
+// load all kit_report
+export const Load_AllKitReport_Service = async (order_number, bag_number) => {
+  try {
+    // Input validation
+    if (!order_number || !bag_number) {
+      throw new Error("order_number/bag_number is missing.");
+    }
+
+    const result1 = await POST_Api(`/kit_report/load_allKit_ByOrderBag`, {
+      order_number,
+      bag_number,
+    });
+    
+    console.log("1. Load_AllKitReport_Service...", result1);
+    return result1;
+  } catch (error) {
+    console.log("Error Load_AllKitReport_Service :", error);
+    return false;
+  }
+};
+
 // get OrderData
 export const Get_OrderData_Service = async (order_number) => {
   try {

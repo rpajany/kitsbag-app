@@ -21,6 +21,7 @@ export const ComboboxDynamic = ({
   setComboValue,
   comboData,
   fetchDataOnOpen,
+  styleCustom=""
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -41,7 +42,7 @@ export const ComboboxDynamic = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between" // w-[200px]
+            className={`w-full justify-between ${styleCustom}`} // w-[200px]
           >
             {comboValue
               ? comboData.find((item) => item.value === comboValue)?.label

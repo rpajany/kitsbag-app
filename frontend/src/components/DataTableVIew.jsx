@@ -91,16 +91,16 @@ export const DataTableVIew = ({ tbl_title, columns, apiData }) => {
       style: {
         backgroundColor: "#4b4444de", // Set header background color to black
         color: "white", // Set header text color to white
-        whiteSpace: "normal",
+        whiteSpace: "break-spaces",
         wordBreak: "break-word",
       },
     },
     cells: {
       style: {
-        whiteSpace: "normal", // ✅ allow wrapping
+        whiteSpace: "break-spaces", // ✅ allow wrapping - normal
         wordBreak: "break-word", // ✅ break long strings
-        overflow: "visible", // ✅ allow content to grow
-        textOverflow: "unset", // ✅ no ellipsis
+        // overflow: "visible", // ✅ allow content to grow
+        // textOverflow: "unset", // ✅ no ellipsis
         paddingLeft: "12px",
         paddingRight: "12px",
       },
@@ -159,7 +159,6 @@ export const DataTableVIew = ({ tbl_title, columns, apiData }) => {
           data={data}
           pagination
           customStyles={customStyles} // Apply custom styles to the table header
-         
         />
       </div>
     </div>

@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export const Combobox = ({ comboValue, setComboValue, comboData }) => {
+export const Combobox = ({ comboValue, setComboValue, comboData , styleCustom=""}) => {
   const [open, setOpen] = React.useState(false);
   return (
     <>
@@ -27,7 +27,7 @@ export const Combobox = ({ comboValue, setComboValue, comboData }) => {
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between" //w-[200px]
+            className={`w-full justify-between ${styleCustom}`} //w-[200px]
           >
             {comboValue
               ? comboData.find((item) => item.value === comboValue)?.label

@@ -254,12 +254,9 @@ export const BinStock = () => {
   const handleDelete = async (row) => {
     console.log("Delete Row :", row);
 
-5
+    5;
     const shouldDelete = await SweetAlert_Delete();
     if (shouldDelete) {
-
-
-
       const result = await Delete_BinStock_Service(row);
       if (result?.data?.success) {
         toast.success("Delete Success!");
@@ -280,30 +277,34 @@ export const BinStock = () => {
     {
       name: "Description",
       selector: (row) => row.description,
+      cell: (row) => (
+        <div
+          title={row.description}
+          style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+        >
+          {row.description}
+        </div>
+      ),
       sortable: true,
-
-      style: {
-        whiteSpace: "normal", // allow multi-line wrapping
-        wordBreak: "break-word", // wrap long words
-        overflow: "visible", // allow content to expand
-        textOverflow: "unset", // remove ellipsis
-        //minWidth: "300px", // optional: controls minimum column width
-        // maxWidth: "200px", // optional: limits column width to keep it neat
-      },
     },
 
     {
       name: "Transact_Date",
       selector: (row) => row.transact_date,
+      cell: (row) => (
+        <div
+          title={row.transact_date}
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            paddingLeft: "12px",
+            paddingRight: "12px",
+          }}
+        >
+          {row.transact_date}
+        </div>
+      ),
       sortable: true,
-      style: {
-        // whiteSpace: "normal", // allows multi-line wrapping
-        //   overflow: "visible", // do not hide overflow
-        //   textOverflow: "unset", // remove ellipsis
-        // wordBreak: "break-word", // break long words
-        minWidth: "200px", // optional: set base width
-        maxWidth: "300px",
-      },
     },
     {
       name: "Stock_Qty",
@@ -334,6 +335,15 @@ export const BinStock = () => {
     {
       name: "Remarks",
       selector: (row) => row.remarks,
+       cell: (row) => (
+        <div
+          title={row.remarks}
+          style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+        >
+          {row.remarks}
+        </div>
+      ),
+
       sortable: true,
     },
     {
@@ -404,6 +414,7 @@ export const BinStock = () => {
                 txt_css={"input-style"}
                 setRowItems={setSelectedRow}
                 dropdownKeys={["part_number", "description"]}
+                  styleCustom="border border-blue-400"
               />
             </div>
             <hr></hr>

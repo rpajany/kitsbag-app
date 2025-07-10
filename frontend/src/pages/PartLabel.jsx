@@ -230,6 +230,7 @@ export const PartLabel = () => {
       const i_code1 = item_partNumber.slice(0, 3).toUpperCase();
       const i_code2 = item_partNumber.slice(3).toUpperCase();
 
+      // 200 dpi label ......
       const zplLines = [
         "CT~~CD,~CC^~CT~",
         `^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR${print_Speed},${print_Speed}~SD${print_Dark}^JUS^LRN^CI0^XZ`,

@@ -62,16 +62,17 @@ const items = [
     url: "/",
     icon: Home,
   },
+   {
+    title: "Child Master",
+    url: "child_master",
+    icon: Blocks,
+  },
   {
     title: "Bag Master",
     url: "master",
     icon: Inbox,
   },
-    {
-    title: "Child Master",
-    url: "child_master",
-    icon: Blocks,
-  },
+   
   {
     title: "Order",
     url: "order",

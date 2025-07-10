@@ -4,9 +4,10 @@ export const MultiAutoComplete = ({
   handle_AutoComplete_Click,
   autoCompleteData,
   inputName,
-  txt_css,
+
   setRowItems,
-  dropdownKeys = [] // ✅ Accept keys to show in dropdown
+  dropdownKeys = [], // ✅ Accept keys to show in dropdown
+    styleCustom=""
 }) => {
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -89,7 +90,7 @@ export const MultiAutoComplete = ({
   }, []);
 
   return (
-    <div className="container w-3/6 relative">
+    <div className="container w-full relative">
       <input
         ref={inputRef}
         type="text"
@@ -101,7 +102,7 @@ export const MultiAutoComplete = ({
         onKeyDown={handleKeyDown}
         placeholder="Search..."
         autoComplete="off"
-        className={`${txt_css} search-input`}
+        className={`${styleCustom} w-full px-2 py-1 rounded-sm search-input`}
       />
 
       {filteredItems.length > 0 && (

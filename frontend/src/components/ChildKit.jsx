@@ -6,10 +6,12 @@ import {
   Update_ChildKit_Service,
   Delete_ChildKit_Service,
 } from "../services/ChildKit_Service";
+import { Load_AutoComplete_Service } from "../services/BinStock_Service";
 import { DateRangePicker } from "./DateRangePicker";
 import { useDateRange } from "@/context/DateRangeContext";
 import { DataTableVIew } from "./DataTableVIew";
 import { Combobox } from "./Combobox";
+import { MultiAutoComplete } from "../components/MultiAutoComplete";
 import { SweetAlert_Delete } from "../utils/custom";
 import { toast } from "react-toastify";
 import { FaEdit } from "react-icons/fa";
@@ -24,6 +26,9 @@ export const ChildKit = () => {
   const [comboValue, setComboValue] = useState("");
   const [comboData, setComboData] = useState([]);
   const [apiData, setApiData] = useState([]);
+
+  const [autoCompleteData, setAutoCompleteData] = useState([]);
+  const [selectedRow, setSelectedRow] = useState([]); // for selected row item in part search autocomplete
 
   const childKit_InitialValue = {
     _id: "",
@@ -67,6 +72,45 @@ export const ChildKit = () => {
       setLoading(false);
     }
   };
+
+  const load_AutoCompleteData = async () => {
+    try {
+      setAutoCompleteData([]);
+      setLoading(true);
+
+      const result = await Load_AutoComplete_Service();
+
+      if (result?.data?.success) {
+        const fetchedData = result?.data?.data;
+        // console.log("Load Data :", fetchedData);
+
+        if (Array.isArray(fetchedData) && fetchedData.length >= 1) {
+          setAutoCompleteData([...fetchedData]); // force new reference even if empty
+        } else if (fetchedData.length === 0) {
+          // console.warn("Expected an array, got:", fetchedData);
+          console.log("Setting empty data: []");
+          setAutoCompleteData([]);
+        }
+      } else if (result.error) {
+        toast.error(result.message); // or use dialog, alert, etc.
+      }
+    } catch (error) {
+      console.log("Error load_AutoCompleteData :", error);
+      toast.error("Something went wrong while loading kits.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedRow) {
+      setChildKitData((prev) => ({
+        ...prev,
+        part_number: selectedRow.part_number,
+        description: selectedRow.description,
+      }));
+    }
+  }, [selectedRow]);
 
   // const load_BagNumbers = async () => {
   //     try {
@@ -197,6 +241,15 @@ export const ChildKit = () => {
     }
   };
 
+  const handle_AutoComplete_Click = async () => {
+    try {
+      const result = await load_AutoCompleteData();
+      console.log("result :", result);
+    } catch (error) {
+      console.log("Error handle_AutoComplete_Click :", error);
+    }
+  };
+
   // Define table columns
   const columns = [
     {
@@ -212,12 +265,23 @@ export const ChildKit = () => {
     {
       name: "Description",
       selector: (row) => row.description,
+      cell: (row) => (
+        <div
+          title={row.description}
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            width: "600px",
+          }}
+        >
+          {row.description}
+        </div>
+      ),
       sortable: true,
     },
     {
       name: "Qty",
       selector: (row) => row.qty,
-      sortable: true,
     },
     // {
     //   name: "Min_Weight",
@@ -300,6 +364,7 @@ export const ChildKit = () => {
                   setComboValue={setComboValue}
                   comboData={comboData}
                   fetchDataOnOpen={fetch_OrderComboData} // 🔁 Pass the function as prop
+                  styleCustom={"border border-purple-400"}
                 />
               </div>
               <div className="mb-2">
@@ -320,6 +385,20 @@ export const ChildKit = () => {
               </div>
             </div>
 
+            <div className="   mb-4">
+              <label htmlFor="part_number" className="label-style">
+                Search Child Part
+              </label>
+              <MultiAutoComplete
+                handle_AutoComplete_Click={handle_AutoComplete_Click}
+                autoCompleteData={autoCompleteData}
+                inputName={""}
+                setRowItems={setSelectedRow}
+                dropdownKeys={["part_number", "description"]}
+                styleCustom="border border-blue-400"
+              />
+            </div>
+
             <div className="mb-2">
               <label htmlFor="part_number" className="label-style">
                 Part Number
@@ -330,9 +409,10 @@ export const ChildKit = () => {
                 name="part_number"
                 value={childKitData.part_number}
                 onChange={handle_InputChange}
+                readOnly
                 placeholder="Enter Part Number."
                 autoComplete="off"
-                className="input-style"
+                className="input-style  bg-gray-200  cursor-not-allowed"
               />
             </div>
 
@@ -346,13 +426,14 @@ export const ChildKit = () => {
                 name="description"
                 value={childKitData.description}
                 onChange={handle_InputChange}
+                readOnly
                 placeholder="Enter Description."
                 autoComplete="off"
-                className="input-style"
+                className="input-style  bg-gray-200 cursor-not-allowed"
               />
             </div>
 
-            <div className="mb-2">
+            <div className="w-1/4 mb-2">
               <label htmlFor="qty" className="label-style">
                 Qty
               </label>

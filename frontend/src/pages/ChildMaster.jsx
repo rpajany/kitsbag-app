@@ -140,6 +140,14 @@ export const ChildMaster = () => {
     {
       name: "Description",
       selector: (row) => row.description,
+       cell: (row) => (
+        <div
+          title={row.description}
+          style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+        >
+          {row.description}
+        </div>
+      ),
       sortable: true,
     },
 

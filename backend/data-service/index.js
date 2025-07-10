@@ -56,6 +56,7 @@ import uid_Routes from "./routes/uid_route.js";
 import kitReport_Routes from "./routes/kitreport_route.js";
 import childmaster_Routes from "./routes/childMaster_route.js";
 import stockReport_Routes from "./routes/stockReport_route.js";
+import dashboard_Routes from "./routes/dashboard_route.js";
 
 // API Routes
 app.use("/api/auth", auth_Routes);
@@ -66,6 +67,7 @@ app.use("/api/uid", uid_Routes);
 app.use("/api/kit_report", kitReport_Routes);
 app.use("/api/child_master", childmaster_Routes);
 app.use("/api/stock_report", stockReport_Routes);
+app.use("/api/dashboard", dashboard_Routes);
 
 app.get("/api/protected", verifyToken, (req, res) => {
   res.status(200).json({

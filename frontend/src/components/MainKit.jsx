@@ -144,11 +144,11 @@ export const MainKit = () => {
       selector: (row) => row.bag_number,
       sortable: true,
     },
-    {
-      name: "Description",
-      selector: (row) => row.description,
-      sortable: true,
-    },
+    // {
+    //   name: "Description",
+    //   selector: (row) => row.description,
+    //   sortable: true,
+    // },
     {
       name: "Qty",
       selector: (row) => row.qty,
@@ -214,7 +214,7 @@ export const MainKit = () => {
     <>
       <div className="w-full border-2 rounded-t-sm">
         <div className="bg-gray-400 text-white px-5 py-2 rounded-t-sm">
-          Add Main Kit
+          Add Bag Number
         </div>
 
         <div className="mx-4 mt-2 mb-2">
@@ -290,7 +290,7 @@ export const MainKit = () => {
               </div>
             </div>
 
-            <div className="mb-2">
+            <div className="w-1/4 mb-2">
               <label htmlFor="rate" className="label-style">
                 Rate/Kit
               </label>
